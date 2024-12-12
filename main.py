@@ -120,6 +120,7 @@ def main_script():
 
     for gen in range(2000):
        # evaluator.tests = generate_boards()
+        scores = []
         for alg in population:
             scores.append(evaluator.evaluate(alg))
        # print("\n".join([str(j) for j in scores]))
@@ -153,8 +154,8 @@ def main_script():
                 nalgs.append(population[0].crossover(a,b))
         for j in nalgs:
             j.mutate(0.5)
-        population += nalgs
-        scores = []
+        cpop += nalgs
+        population = cpop
         
 
 if __name__ == '__main__':
