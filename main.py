@@ -110,7 +110,7 @@ def generate_boards():
 
 def main_script():
     modelname = "17x1x48x33_GEN_WSPE_RELU"
-    population = [algorithm.Algorithm(17,1,48,33) for i in range(100)]
+    population = [algorithm.Algorithm(17,1,48,33) for i in range(25)]
     scores = []
     # gen_res = None
     # with open("new_models/17x1x60x33_SPE.pkl", "rb") as f:
@@ -144,11 +144,11 @@ def main_script():
             npop.append(population[msi])
         population = npop
         scores = nscores
-        cpop = population[0:10]
+        cpop = population[0:5]
         nalgs = []
-        for i in range(10):
+        for i in range(5):
             a = cpop[i]
-            for j in range(10):
+            for j in range(5):
                 b = cpop[j]
                 if b == a: continue
                 nalgs.append(population[0].crossover(a,b))
