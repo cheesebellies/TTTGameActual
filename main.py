@@ -1,6 +1,7 @@
 from game import Game
 import algorithm
 import copy
+import time
 from pprint import pprint
 import pickle
 import random
@@ -45,6 +46,7 @@ def main_script():
     evaluator.tests = generate_boards()
 
     for gen in range(2000):
+        gen_start_time = time.time()
         for alg in population:
             alg.score = (evaluator.evaluate(alg))
         population.sort(key=lambda a: a.score, reverse = True)
@@ -54,7 +56,14 @@ def main_script():
             for alg2 in population:
                 if alg2 == alg: continue
                 npop.append(alg.crossover(alg,alg2))
-                
+        for alg in npop:
+            alg.mutate(1.0)
+        for alg in population:
+            alg.mutate(0.075)
+        population = population+npop
+        if gen%5 == 0:
+            save_generation(modelname,population)
+        print(f"Generation complete. Time: {int(time.time()-gen_start_time)} | Score: {population[0].score}")
         
 
 if __name__ == '__main__':
