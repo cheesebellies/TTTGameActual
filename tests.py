@@ -52,3 +52,54 @@
 
 p = [i for i in range(20)]
 print(p[0:10])
+
+
+    # for gen in range(2000):
+    #     pass
+       # evaluator.tests = generate_boards()
+    #     scores = []
+    #     print(len(population))
+    #     algscores = {}
+    #     for alg in population:
+    #         algscores[alg] = evaluator.evaluate(alg)
+    #    # print("\n".join([str(j) for j in scores]))
+    #     # gen_res, gsc = generation(evaluator, 0.25*(1.0/(1.0+(math.e**(i/100.0))))+0.75, 15, gen_res)
+    #     print("Generation " + str(gen) + " complete. Score: " + str(max(algscores.values())))
+    #     if gen%5 == 0:
+    #         if not os.path.isdir(f"genetic_models/{modelname}"):
+    #             os.mkdir(f"genetic_models/{modelname}")
+    #         for i, alg in enumerate(population.keys()):
+    #             pass
+    #             # with open(f'genetic_models/{modelname}/model_{str(i)}.pkl', 'wb') as f:
+    #             #     pickle.dump(alg, f)
+    #         n = [l for l in algscores.values()]
+    #         n.sort()
+    #         print(n)
+    #         print(population)
+    #     with open(f'genetic_models/{modelname}/score.txt','a') as f:
+    #         f.write("\n" + str(max(scores)))
+    #     nscores = []
+    #     npop = []
+    #     for j in range(len(scores)):
+    #         i = len(scores)-j-1
+    #         ms = max(scores)
+    #         msi = scores.index(ms)
+    #         nscores.append(ms)
+    #         scores.pop(msi)
+    #         npop.append(population[msi])
+    #     population = npop
+    #     scores = nscores
+    #     cpop = population[0:5]
+    #     nalgs = []
+    #     for i in range(5):
+    #         a = cpop[i]
+    #         for j in range(5):
+    #             b = cpop[j]
+    #             if b == a: continue
+    #             nalgs.append(population[0].crossover(a,b))
+    #     for j in nalgs:
+    #         j.mutate(1.0)
+    #     for j in cpop:
+    #         j.mutate(0.075)
+    #     cpop += nalgs
+    #     population = cpop
