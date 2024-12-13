@@ -60,11 +60,10 @@ def main_script():
                 npop.append(alg.crossover(alg,alg2))
         for alg in npop:
             alg.mutate(1.0)
-        for alg in population:
-            alg.mutate(0.075)
+        # for alg in population:
+        #     alg.mutate(0.075)
         population = population+npop
-        if gen%5 == 0:
-            save_generation(modelname,population)
+        save_generation(modelname,population)
         print(f"Generation complete. Time: {int(time.time()-gen_start_time)} | Score: {population[0].score}")
         
 
