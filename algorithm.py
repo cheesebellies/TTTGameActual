@@ -5,7 +5,8 @@ import copy
 class Node:
     def __init__(self, bias: float):
         self.bias = bias
-        self.connections = {}
+        self.connection_weights = []
+        self.connection_nodes = []
         self.running_sum = bias
         
     def receive(self, value: float):
@@ -14,8 +15,8 @@ class Node:
     def propogate(self):
         sval = self.sigmoid(self.running_sum)
         self.running_sum = self.bias
-        for connection in self.connections.keys():
-            connection.receive(sval*self.connections[connection])
+        for i in range(len(self.connection_nodes)):
+            self.connection_nodes[i].receive(sval*self.connection_weights[i])
     
     def sigmoid(self, value: float):
         # value = max(min(value,709),-709)
@@ -30,17 +31,18 @@ class Node:
         return self.sigmoid(tr)
     
     def connect_to(self, node: 'Node', weight: float):
-        self.connections[node] = weight
+        self.connection_nodes.append(node)
+        self.connection_weights.append(weight)
     
     def randomize(self, scale: float):
         r = random.uniform(-scale,scale)
         if random.randint(0,5) == 5:
             self.bias += r*0.1
-        for connection in self.connections.keys():
+        for i in range(len(self.connection_weights)):
             if random.randint(0,5) != 5: continue
             r = random.uniform(-scale,scale)
-            self.connections[connection] += r
-            self.connections[connection] = max(min(self.connections[connection],10.0),-10.0)
+            self.connection_weights[i] += r
+            # self.connections[connection] = max(min(self.connections[connection],10.0),-10.0)
 
 
 
@@ -54,10 +56,18 @@ class Layer:
     
     def connect_nodes(self, to_layer):
         for node in self.nodes:
+            node.connection_weights = []
+            node.connection_nodes = []
             if to_layer:
                 for onode in to_layer.nodes:
                     node.connect_to(onode,random.uniform(-0.5,0.5))
 
+    def reconnect_nodes(self,to_layer):
+        for node in self.nodes:
+            node.connection_nodes = []
+            for onode in to_layer.nodes:
+                node.connection_nodes.append(onode)
+    
     def input_values(self, values: list):
         for i in range(len(self.nodes)):
             self.nodes[i].receive(values[i])
@@ -131,7 +141,7 @@ class Algorithm:
         alg.output_layer.nodes = child_node_layout[-1]
         tl = [alg.input_layer] + alg.hidden_layers + [alg.output_layer]
         for l in range(len(tl)-1):
-            tl[l].connect_nodes(tl[l+1])
+            tl[l].reconnect_nodes(tl[l+1])
         return alg
 
         
