@@ -10,6 +10,20 @@ import multiprocessing
 import os
 import math
 
+def generate_boards():
+    boards = []
+    for i in range(16):
+        g = [[0 for a in range(4)] for b in range(4)]
+        g[int(i/4)][int(i%4)] = 1
+        boards.append(g)
+    for i in range(15):
+        for j in range(30):
+            g = [[0 for a in range(4)] for b in range(4)]
+            for l in range(i+2):
+                g[random.randint(0,3)][random.randint(0,3)] = (l%2) + 1
+            boards.append(g)
+    return boards
+
 def save_generation(modelname, population):
     if not os.path.isdir(f"genetic_models/{modelname}"):
             os.mkdir(f"genetic_models/{modelname}")
