@@ -57,7 +57,7 @@ cull_ratio (>= 2) is set to a default of 3, meaning 1/3 the population is culled
             population.remove(pop)
     spots_left = before_count - len(population)
     population.sort(key=lambda x: x.fitness, reverse=True)
-    spops_weights = [i.fitness for i in population]
+    spops_weights = [i.fitness*5 for i in population]
     parents = [
         random.choices(population, weights = spops_weights, k = spots_left),
         random.choices(population, weights = spops_weights, k = spots_left)
