@@ -1,41 +1,41 @@
-# from game import Game
-# from algorithm import Algorithm, Node, Layer
-# import pickle
-# import eval
-# alg = None
+from game import Game
+from algorithm import Algorithm, Node, Layer
+import pickle
+import eval
+alg = None
 
-# with open("genetic_models/17x1x48x33_GEN_WSPE/model_0.pkl", "rb") as f:
-#     alg = pickle.load(f)
+with open("genetic_models/17x1x48x33_WSPE_25/model_0.pkl", "rb") as f:
+    alg = pickle.load(f)
 
-# def get_inputs(res: list):
-#     is_swap = res[0] < 0.5
-#     xi = round(res[1]*3.0)
-#     yi = round(res[2]*3.0)
-#     xf = round(res[3]*3.0)
-#     yf = round(res[4]*3.0)
-#     return (is_swap,xi,yi,xf,yf)
-# e = eval.SinglePlacementEvaluation()
-# r = e.evaluate(alg,False)
-# print(r)
+def get_inputs(res: list):
+    is_swap = res[0] < 0.5
+    xi = round(res[1]*3.0)
+    yi = round(res[2]*3.0)
+    xf = round(res[3]*3.0)
+    yf = round(res[4]*3.0)
+    return (is_swap,xi,yi,xf,yf)
+e = eval.SinglePlacementEvaluation()
+r = e.evaluate(alg,False)
+print(r)
 
-# g = Game()
-# while True:
-#     print(g)
-#     xi = int(input("x: "))
-#     yi = int(input("y: "))
-#     s = input("swap(y/n): ")=="y"
-#     if s:
-#         xf = int(input("x: "))
-#         yf = int(input("y: "))
-#         g.swap(1,xi,yi,xf,yf)
-#     g.place(1,xi,yi)
-#     res = alg.run([2] + g.alginp(2))
-#     print(res)
-#     is_swap,xi,yi,xf,yf = get_inputs(res)
-#     if is_swap:
-#         g.swap(2,xi,yi,xf,yf)
-#     else:
-#         g.place(2,xi,yi)
+g = Game()
+while True:
+    print(g)
+    xi = int(input("x: "))
+    yi = int(input("y: "))
+    s = input("swap(y/n): ")=="y"
+    if s:
+        xf = int(input("x: "))
+        yf = int(input("y: "))
+        g.swap(1,xi,yi,xf,yf)
+    g.place(1,xi,yi)
+    res = alg.run([2] + g.alginp(2))
+    print(res)
+    is_swap,xi,yi,xf,yf = get_inputs(res)
+    if is_swap:
+        g.swap(2,xi,yi,xf,yf)
+    else:
+        g.place(2,xi,yi)
                 
 # # # import random
 # # # boards = []

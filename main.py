@@ -41,11 +41,13 @@ def load_generation(modelname, popcount):
 
 def main_script():
     modelname = "17x1x48x33_WSPE_25"
-    population = load_generation(modelname,25)
-    evaluator = eval.SinglePlacementEvaluation()
-    evaluator.tests = generate_boards()
+    # population = load_generation(modelname,25)
+    population = [algorithm.Algorithm(17,1,48,33) for i in range(25)]
+    tests = generate_boards()
 
     for gen in range(2000):
+        evaluator = eval.SinglePlacementEvaluation()
+        evaluator.tests = tests
         gen_start_time = time.time()
         for alg in population:
             alg.score = (evaluator.evaluate(alg))
