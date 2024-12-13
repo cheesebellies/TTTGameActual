@@ -47,7 +47,7 @@ class SinglePlacementEvaluation(Evaluation):
         # locations = []
         c = 0
         for board in self.tests:
-            score_increase = (18.0)/(2*((c/90.0)+1.0))+0.25
+            # score_increase = (18.0)/(2*((c/90.0)+1.0))+0.25
             c += 1
             game = Game(copy.deepcopy(board))
             algorithm_input = game.alginp()
@@ -59,9 +59,9 @@ class SinglePlacementEvaluation(Evaluation):
             else:
                 success_code = game.place(1,xi,yi)
             if success_code != 0:
-                score -= score_increase*2.5
+                score -= 2#score_increase
             else:
-                score += score_increase
+                score += 1#score_increase
             if print_boards:
                 print(game)
             # locations.append((xi,yi))

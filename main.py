@@ -39,10 +39,43 @@ def load_generation(modelname, popcount):
             population.append(pickle.load(f))
     return population
 
+def SexLector(population: list, cull_ratio: int = 3):
+    """Modify population in place to reproduce top scorers.
+cull_ratio (>= 2) is set to a default of 3, meaning 1/3 the population is culled"""
+
+    population.sort(key= lambda x: x.score, reverse=True)
+    save_count = int((cull_ratio-1)*len(population)/(cull_ratio))
+    before_count = len(population)
+    for i, pop in enumerate(population):
+        save_count -= 1
+        if save_count <= 0:
+            break
+        pop.fitness += int((2*i)/save_count)+3
+    for pop in population:
+        pop.fitness -= 1
+        if pop.fitness <= 0:
+            population.remove(pop)
+    spots_left = before_count - len(population)
+    population.sort(key=lambda x: x.fitness, reverse=True)
+    spops_weights = [i.fitness for i in population]
+    parents = [
+        random.choices(population, weights = spops_weights, k = spots_left),
+        random.choices(population, weights = spops_weights, k = spots_left)
+    ]
+    nalgs = []
+    for i in range(len(parents[0])):
+        nalg = parents[0][0].crossover(parents[0][i],parents[1][i])
+        nalg.mutate(1.0)
+        nalgs.append(nalg)
+    population = population + nalgs
+    return population
+
+
+
 def main_script():
-    modelname = "17x1x48x33_WSPE_25"
+    modelname = "17x1x48x33_WSPE_100"
     # population = load_generation(modelname,25)
-    population = [algorithm.Algorithm(17,1,48,33) for i in range(25)]
+    population = [algorithm.Algorithm(17,1,48,33) for i in range(100)]
     tests = generate_boards()
     
     for gen in range(2000):
@@ -51,20 +84,24 @@ def main_script():
         gen_start_time = time.time()
         for alg in population:
             alg.score = (evaluator.evaluate(alg))
-        population.sort(key=lambda a: a.score, reverse = True)
-        del population[-20:]
-        npop = []
-        for alg in population:
-            for alg2 in population:
-                if alg2 == alg: continue
-                npop.append(alg.crossover(alg,alg2))
-        for alg in npop:
-            alg.mutate(1.0)
+        population = SexLector(population,2)
+        # population.sort(key=lambda a: a.score, reverse = True)
+        # del population[-20:]
+        # npop = []
         # for alg in population:
-        #     alg.mutate(0.075)
-        population = population+npop
-        save_generation(modelname,population)
-        print(f"Generation complete. Time: {int(time.time()-gen_start_time)} | Score: {population[0].score}")
+        #     for alg2 in population:
+        #         if alg2 == alg: continue
+        #         npop.append(alg.crossover(alg,alg2))
+        # for alg in npop:
+        #     alg.mutate(1.0)
+        # # for alg in population:
+        # #     alg.mutate(0.075)
+        # population = population+npop
+        if gen%2 == 0:
+            save_generation(modelname,population)
+        with open(f"genetic_models/{ modelname}/score.txt","a") as f:
+            f.write(str(population[0].score) + "\n")
+        print(f"Generation {gen} complete. Time: {int(time.time()-gen_start_time)} | Score: {population[0].score}")
         
 
 if __name__ == '__main__':

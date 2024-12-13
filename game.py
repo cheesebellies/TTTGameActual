@@ -47,9 +47,15 @@ class Game:
             return 2
         if self.board[yf][xf] != 0:
             return 3
+        t1 = self.board[yi][xi]
+        t2 = self.board[yf][xf]
         self.board[yi][xi] = type
         self.board[yf][xf] = ot
-        return 0
+        if self.winstate() == 0:
+            return 0
+        else:
+            self.board[yi][xi] = t1
+            self.board[yf][xf] = t2
 
     def winstate(self) -> int:
         for y in range(4):

@@ -98,6 +98,7 @@ class Algorithm:
         for l in range(len(tl)-1):
             tl[l].connect_nodes(tl[l+1])
         self.score = 0.0
+        self.fitness = 1
     
     def run(self, inputs: list):
         self.input_layer.input_values(inputs)
