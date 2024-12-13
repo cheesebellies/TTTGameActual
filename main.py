@@ -109,8 +109,12 @@ def generate_boards():
 
 
 def main_script():
-    modelname = "17x1x48x33_GEN_WSPE_RELU"
-    population = [algorithm.Algorithm(17,1,48,33) for i in range(25)]
+    modelname = "17x1x48x33_WSPE_25"
+    # population = [algorithm.Algorithm(17,1,48,33) for i in range(25)]
+    population = []
+    for i in range(25):
+        with open(f'genetic_models/{modelname}/model_{str(i)}.pkl', 'rb') as f:
+            population.append(pickle.load(f))
     scores = []
     # gen_res = None
     # with open("new_models/17x1x60x33_SPE.pkl", "rb") as f:
@@ -121,6 +125,7 @@ def main_script():
     for gen in range(2000):
        # evaluator.tests = generate_boards()
         scores = []
+        print(len(population))
         for alg in population:
             scores.append(evaluator.evaluate(alg))
        # print("\n".join([str(j) for j in scores]))
@@ -130,13 +135,19 @@ def main_script():
             if not os.path.isdir(f"genetic_models/{modelname}"):
                 os.mkdir(f"genetic_models/{modelname}")
             for i, alg in enumerate(population):
-                with open(f'genetic_models/{modelname}/model_{str(i)}.pkl', 'wb') as f:
-                    pickle.dump(alg, f)
+                pass
+                # with open(f'genetic_models/{modelname}/model_{str(i)}.pkl', 'wb') as f:
+                #     pickle.dump(alg, f)
+            n = [l for l in scores]
+            n.sort()
+            print(n)
+            print(population)
         with open(f'genetic_models/{modelname}/score.txt','a') as f:
             f.write("\n" + str(max(scores)))
         nscores = []
         npop = []
-        for i in range(len(scores)):
+        for j in range(len(scores)):
+            i = len(scores)-j-1
             ms = max(scores)
             msi = scores.index(ms)
             nscores.append(ms)
@@ -153,7 +164,9 @@ def main_script():
                 if b == a: continue
                 nalgs.append(population[0].crossover(a,b))
         for j in nalgs:
-            j.mutate(0.5)
+            j.mutate(1.0)
+        for j in cpop:
+            j.mutate(0.075)
         cpop += nalgs
         population = cpop
         

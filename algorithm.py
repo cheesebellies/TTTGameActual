@@ -35,9 +35,9 @@ class Node:
     def randomize(self, scale: float):
         r = random.uniform(-scale,scale)
         if random.randint(0,5) == 5:
-            self.bias += r*0.5
+            self.bias += r*0.1
         for connection in self.connections.keys():
-            if random.randint(0,10) != 10: continue
+            if random.randint(0,5) != 5: continue
             r = random.uniform(-scale,scale)
             self.connections[connection] += r
             self.connections[connection] = max(min(self.connections[connection],10.0),-10.0)
@@ -49,8 +49,8 @@ class Layer:
         self.width = width
         self.nodes = []
         for i in range(width):
-            r = random.uniform(-0.1,0.1)
-            self.nodes.append(Node(r))
+            # r = random.uniform(-0.1,0.1)
+            self.nodes.append(Node(0.1))
     
     def connect_nodes(self, to_layer):
         for node in self.nodes:
