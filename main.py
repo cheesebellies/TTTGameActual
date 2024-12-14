@@ -76,12 +76,11 @@ def main_script():
     modelname = "17x1x48x33_WSPE_100"
     # population = load_generation(modelname,25)
     population = [algorithm.Algorithm(17,1,48,33) for i in range(100)]
-    tests = generate_boards()
     tte = 0.0
     
     for gen in range(2000):
         evaluator = eval.SinglePlacementEvaluation()
-        evaluator.tests = tests
+        evaluator.tests = generate_boards()
         gen_start_time = time.time()
         for alg in population:
             alg.score = (evaluator.evaluate(alg))
@@ -99,14 +98,14 @@ def main_script():
         # #     alg.mutate(0.075)
         # population = population+npop
         # 54837 kill PID
-        if gen%2 == 0:
+        if gen%5 == 0:
             save_generation(modelname,population)
         with open(f"genetic_models/{ modelname}/score.txt","a") as f:
             f.write(str(population[0].score) + "\n")
         end_time = time.time()-gen_start_time
         tte += end_time
         eta = int(((tte/(gen+1))*2000) - tte)
-        print(f"Generation {gen} complete. Time: {int(end_time)} | Left: {str(datetime.timedelta(seconds=eta))} | Score: {population[0].score}")
+        print(f"Generation {gen+1}/2000 complete. Time: {int(end_time)} | Left: {str(datetime.timedelta(seconds=eta))} | Score: {population[0].score}")
         
 
 if __name__ == '__main__':
