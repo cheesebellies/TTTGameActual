@@ -103,3 +103,7 @@
 #     #         j.mutate(0.075)
 #     #     cpop += nalgs
 #     #     population = cpop
+import datetime
+
+tobj = datetime.datetime(datetime.timedelta(seconds=24523))
+print(tobj.strftime())

@@ -1,7 +1,7 @@
 from game import Game
 import algorithm
 import copy
-import time
+import time, datetime
 from pprint import pprint
 import pickle
 import random
@@ -77,6 +77,7 @@ def main_script():
     # population = load_generation(modelname,25)
     population = [algorithm.Algorithm(17,1,48,33) for i in range(100)]
     tests = generate_boards()
+    tte = 0.0
     
     for gen in range(2000):
         evaluator = eval.SinglePlacementEvaluation()
@@ -97,11 +98,15 @@ def main_script():
         # # for alg in population:
         # #     alg.mutate(0.075)
         # population = population+npop
+        # 54837 kill PID
         if gen%2 == 0:
             save_generation(modelname,population)
         with open(f"genetic_models/{ modelname}/score.txt","a") as f:
             f.write(str(population[0].score) + "\n")
-        print(f"Generation {gen} complete. Time: {int(time.time()-gen_start_time)} | Score: {population[0].score}")
+        end_time = time.time()-gen_start_time
+        tte += end_time
+        eta = int(((tte/(gen+1))*2000) - tte)
+        print(f"Generation {gen} complete. Time: {int(end_time)} | Left: {str(datetime.timedelta(seconds=eta))} | Score: {population[0].score}")
         
 
 if __name__ == '__main__':
