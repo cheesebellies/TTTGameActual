@@ -76,28 +76,28 @@ class DuelEvaluation(Evaluation):
     def evaluate(self, algorithm_one: Algorithm, algorithm_two: Algorithm):
         game = Game()
         for i in range(8):
-            a1r = self.place_from_inputs(algorithm_one.run(game.alginp(1)),game,1)
-            a2r = self.place_from_inputs(algorithm_two.run(game.alginp(2)),game,2)
+            a1r = self.place_from_inputs(algorithm_one.run([1] + game.alginp(1)),game,1)
+            a2r = self.place_from_inputs(algorithm_two.run([2] + game.alginp(2)),game,2)
             if a1r == 0:
-                a1r.score += 1.0
+                algorithm_one.score += 1.0
             else:
-                a1r.score -= 1.0
+                algorithm_one.score -= 1.0
             if a2r == 0:
-                a2r.score += 1.0
+                algorithm_two.score += 1.0
             else:
-                a2r.score -= 1.0
+                algorithm_two.score -= 1.0
             ws = game.winstate()
             if ws == 0:
                 continue
             elif ws == 3:
-                a2r.score += 2.0
-                a1r.score += 1.0
+                algorithm_two.score += 2.0
+                algorithm_one.score += 1.0
             elif ws == 1:
-                a1r.score += 6.0
-                a2r.score -= 3.0
+                algorithm_one.score += 6.0
+                algorithm_two.score -= 3.0
             elif ws == 2:
-                a2r.score += 6.0
-                a1r.score -= 3.0
+                algorithm_two.score += 6.0
+                algorithm_one.score -= 3.0
             return
                 
 

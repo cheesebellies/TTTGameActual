@@ -100,12 +100,13 @@ def main_script():
         
         # if gen%5 == 0:
             # save_generation(modelname,population)
-        with open(f"genetic_models/{ modelname}/score.txt","a") as f:
-            f.write(str(','.join([i[0].score for i in populations])) + "\n")
+        # with open(f"genetic_models/{ modelname}/score.txt","a") as f:
+        with open("TESTSCORE.txt", "a") as f:
+            f.write(str(','.join([str(i[0].score) for i in populations])) + "\n")
         end_time = time.time()-gen_start_time
         tte += end_time
         eta = int(((tte/(gen+1))*2000) - tte)
-        print(f"Generation {gen+1}/2000 complete. Time: {int(end_time)} | Left: {str(datetime.timedelta(seconds=eta))} | Scores: {','.join([i[0].score for i in populations])}")
+        print(f"Generation {gen+1}/2000 complete. Time: {int(end_time)} | Left: {str(datetime.timedelta(seconds=eta))} | Scores: {','.join([str(i[0].score) for i in populations])}")
         
 
 if __name__ == '__main__':
