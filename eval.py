@@ -14,24 +14,21 @@ class Evaluation:
     @staticmethod
     def get_inputs(res: list):
         
-        is_swap = res[0] < 0.5
-        mi = 0
-        t=-99.0
-        for i,v in enumerate(res[1:17]):
-            if v > t:
-                t=v
-                mi=i
-        mf = 0
-        t =-99.0
-        for i, v in enumerate(res[17:]):
-            if v>t:
-                t=v
-                mf=i
+        is_swap = bool(res[0] == 0.0)
+        mi = res[0:17].index(max(res[0:17]))
+        mf = res[17:].index(max(res[17:]))
         xi=mi%4
         yi=int(mi/4)
         xf=mf%4
         yf=int(mf/4)
         return (is_swap,xi,yi,xf,yf)
+    
+    def place_from_inputs(self, res: list, game: Game, type: int):
+        is_swap,xi,yi,xf,yf = self.get_inputs(res)
+        if is_swap:
+            return game.swap(type,xi,yi,xf,yf)
+        else:
+            return game.place(type,xi,yi)
 
     def load_boards_from_file(self, load_path: str = None):
         with open(self.loadpath, 'r') as f:
@@ -76,35 +73,33 @@ class SinglePlacementEvaluation(Evaluation):
 
 class DuelEvaluation(Evaluation):
     
-    def evaluate(self, algorithm_one: Algorithm, algorithm_two: Algorithm, print_boards: bool = False):
+    def evaluate(self, algorithm_one: Algorithm, algorithm_two: Algorithm):
         game = Game()
         for i in range(8):
-            is_swap,xi,yi,xf,yf = self.get_inputs(algorithm_one.run([1] + game.alginp(1)))
-            valid_move = 0
-            if is_swap:
-                valid_move = game.swap(1,xi,yi,xf,yf)
+            a1r = self.place_from_inputs(algorithm_one.run(game.alginp(1)),game,1)
+            a2r = self.place_from_inputs(algorithm_two.run(game.alginp(2)),game,2)
+            if a1r == 0:
+                a1r.score += 1.0
             else:
-                valid_move = game.place(1,xi,yi)
-            if game.winstate() != 0:
-                # self.score += 10
-                # self.score += 30-i
-                if print_boards: print(game)
-                break
-            if valid_move != 0:
-                self.score -= 2
+                a1r.score -= 1.0
+            if a2r == 0:
+                a2r.score += 1.0
             else:
-                self.score += 1
-            is_swap,xi,yi,xf,yf = self.get_inputs(algorithm_two.run([2] + game.alginp(2)))
-            valid_move = 0
-            if is_swap:
-                valid_move = game.swap(2,xi,yi,xf,yf)
-            else:
-                valid_move = game.place(2,xi,yi)
-            if game.winstate() != 0:
-                if print_boards: print(game)
-                break
-            if print_boards: print(game)
-        return self.score
+                a2r.score -= 1.0
+            ws = game.winstate()
+            if ws == 0:
+                continue
+            elif ws == 3:
+                a2r.score += 2.0
+                a1r.score += 1.0
+            elif ws == 1:
+                a1r.score += 6.0
+                a2r.score -= 3.0
+            elif ws == 2:
+                a2r.score += 6.0
+                a1r.score -= 3.0
+            return
+                
 
 class AutoDuelEvaluation(Evaluation):
     

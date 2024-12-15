@@ -73,39 +73,39 @@ cull_ratio (>= 2) is set to a default of 3, meaning 1/3 the population is culled
 
 
 def main_script():
-    modelname = "17x1x48x33_WSPE_100"
+    modelname = "17x1x48x33_DE_25x4"
     # population = load_generation(modelname,25)
-    population = [algorithm.Algorithm(17,1,48,33) for i in range(100)]
+    populations = [
+        [algorithm.Algorithm(17,1,48,33) for i in range(25)] for j in range(4)
+        ]
     tte = 0.0
+    evaluator = eval.DuelEvaluation()
+    fight_pattern = [[0,1],[0,2],[0,3],[3,2],[3,1],[2,1]]
     
-    for gen in range(2000):
-        evaluator = eval.SinglePlacementEvaluation()
-        evaluator.tests = generate_boards()
+    for gen in range(2000):        
         gen_start_time = time.time()
-        for alg in population:
-            alg.score = (evaluator.evaluate(alg))
-        population = SexLector(population,2)
-        # population.sort(key=lambda a: a.score, reverse = True)
-        # del population[-20:]
-        # npop = []
-        # for alg in population:
-        #     for alg2 in population:
-        #         if alg2 == alg: continue
-        #         npop.append(alg.crossover(alg,alg2))
-        # for alg in npop:
-        #     alg.mutate(1.0)
-        # # for alg in population:
-        # #     alg.mutate(0.075)
-        # population = population+npop
-        # 54837 kill PID
-        if gen%5 == 0:
-            save_generation(modelname,population)
+        for population in populations:
+            for alg in population:
+                alg.score = 0.0
+        
+        for i in fight_pattern:
+            pop1 = populations[i[0]]
+            pop2 = populations[i[1]]
+            for falg in pop1:
+                for salg in pop2:
+                    evaluator.evaluate(falg,salg)
+                
+        for i in range(4):
+            populations[i] = SexLector(populations[i])
+        
+        # if gen%5 == 0:
+            # save_generation(modelname,population)
         with open(f"genetic_models/{ modelname}/score.txt","a") as f:
-            f.write(str(population[0].score) + "\n")
+            f.write(str(','.join([i[0].score for i in populations])) + "\n")
         end_time = time.time()-gen_start_time
         tte += end_time
         eta = int(((tte/(gen+1))*2000) - tte)
-        print(f"Generation {gen+1}/2000 complete. Time: {int(end_time)} | Left: {str(datetime.timedelta(seconds=eta))} | Score: {population[0].score}")
+        print(f"Generation {gen+1}/2000 complete. Time: {int(end_time)} | Left: {str(datetime.timedelta(seconds=eta))} | Scores: {','.join([i[0].score for i in populations])}")
         
 
 if __name__ == '__main__':

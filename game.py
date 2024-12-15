@@ -23,9 +23,9 @@ class Game:
         tr = []
         for i in t:
             if i == 0:
-                tr.append(0.0)
-            elif i == type:
                 tr.append(1.0)
+            elif i == type:
+                tr.append(0.0)
             elif i == abs(type-3):
                 tr.append(-1.0)
         return tr
